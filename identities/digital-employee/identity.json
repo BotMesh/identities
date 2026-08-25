@@ -1,0 +1,14 @@
+{
+  "slug": "digital-employee",
+  "name": "Digital Employee",
+  "description": "Voice-first business assistant: CRM leads capture, task tracking, calendar reminders, and an expense workflow — with Excel export and a skill creator for new workflows.",
+  "skills": [
+    "github.com/BotMesh/identities/skills/biz-core",
+    "github.com/BotMesh/identities/skills/crm-leads",
+    "github.com/BotMesh/identities/skills/pm-tasks",
+    "github.com/BotMesh/identities/skills/my-calendar",
+    "github.com/BotMesh/identities/skills/flow-expense",
+    "github.com/anthropics/skills/skills/xlsx",
+    "github.com/anthropics/skills/skills/skill-creator"
+  ]
+}
