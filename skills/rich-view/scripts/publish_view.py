@@ -11,7 +11,8 @@ Env:
   RICH_VIEW_S3_KEY_ID    access key id
   RICH_VIEW_S3_SECRET    secret access key
   RICH_VIEW_S3_REGION    default "auto" (R2); use "us-east-1" for MinIO
-  RICH_VIEW_TTL_SECONDS  presigned-GET lifetime, default 600 (10 minutes)
+  RICH_VIEW_TTL_SECONDS  presigned-GET lifetime, default 86400 (1 day);
+                         SigV4 maximum is 604800 (7 days)
 
 Usage:
   publish_view.py --file report.html            # upload + print URL JSON
@@ -111,7 +112,7 @@ def main():
     key_id = os.environ.get("RICH_VIEW_S3_KEY_ID")
     secret = os.environ.get("RICH_VIEW_S3_SECRET")
     region = os.environ.get("RICH_VIEW_S3_REGION", "auto")
-    ttl = int(os.environ.get("RICH_VIEW_TTL_SECONDS", "600"))
+    ttl = min(int(os.environ.get("RICH_VIEW_TTL_SECONDS", "86400")), 604800)
     if not all([endpoint, bucket, key_id, secret]):
         print(json.dumps({"ok": False, "error":
                           "RICH_VIEW_S3_* env not configured — fall back to a "

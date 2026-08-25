@@ -93,14 +93,14 @@ agent 会：自动转写 → 整理成客户档案（公司/联系人/阶段/金
 ### 📊 富格式报表（可选，推荐配置）
 
 问"这个月的客户按金额排一下，做成表格给我"——agent 会生成一个**交互式网页**
-（可排序表格 + 图表），发回一个**约 10 分钟后自动失效的临时链接**，点开即看，
-过期即毁，不留痕迹。
+（可排序表格 + 图表），发回一个**临时链接（默认 1 天后失效，最长 7 天）**，
+点开即看，到期自动销毁。
 
 **一次性配置（用免费的 Cloudflare R2）：**
 
 1. 在 Cloudflare 控制台创建一个 R2 存储桶（保持**私有**，无需开公开访问）
 2. 创建 R2 API 令牌（对该桶 Object Read & Write）
-3. 给桶加一条生命周期规则：对象 1 天后删除（双保险；链接本身 10 分钟就失效）
+3. 给桶加一条生命周期规则：对象 2 天后删除（物理清理；链接本身到期即失效）
 4. 把以下环境变量配置给 agent：
 
 ```bash
@@ -108,7 +108,7 @@ RICH_VIEW_S3_ENDPOINT=https://<账户ID>.r2.cloudflarestorage.com
 RICH_VIEW_S3_BUCKET=agent-reports
 RICH_VIEW_S3_KEY_ID=...
 RICH_VIEW_S3_SECRET=...
-RICH_VIEW_TTL_SECONDS=600
+RICH_VIEW_TTL_SECONDS=86400   # 链接有效期 1 天，最长可设 7 天
 ```
 
 不想用云？自托管 MinIO 走同一套配置（`RICH_VIEW_S3_REGION=us-east-1`）。
