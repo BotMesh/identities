@@ -1,5 +1,7 @@
 # BotMesh Identities
 
+> 中文用户指南：[USAGE.zh-CN.md](USAGE.zh-CN.md)
+
 ClawUp identities (pre-configured skill bundles) and the business skills behind
 them. An identity is selected when creating an agent on
 [ClawUp](https://clawup.org); its skills are auto-installed into the agent's
@@ -41,7 +43,7 @@ names) are never guessed.
 | [crm-leads](skills/crm-leads/) | Voice/text → structured lead KB with dedupe and timelines |
 | [pm-tasks](skills/pm-tasks/) | Task CRUD + daily follow-up digest |
 | [my-calendar](skills/my-calendar/) | Events, morning digest, reminder tick |
-| [flow-expense](skills/flow-expense/) | Expense state machine, approval gate, append-only ledger; also the template skeleton for new workflows |
+| [flow-expense](skills/flow-expense/) | Expense state machine, approval gate, append-only ledger + hledger-compatible double-entry journal with a `reconcile` check; also the template skeleton for new workflows |
 
 ## Curated ecosystem add-ons (reviewed 2026-08-25)
 
