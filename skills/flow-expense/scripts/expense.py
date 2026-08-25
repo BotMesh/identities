@@ -9,8 +9,17 @@ Usage:
     [--by self] [--note "..."]
   expense.py list [--status draft] [--month 2026-08]
   expense.py report --month 2026-08     # monthly summary
+  expense.py reconcile                  # approved-vs-paid balance check
+
+Double-entry journal: `approved` and `paid` transitions also append an
+hledger-compatible entry to expenses/journal.hledger, making "every approved
+expense is paid exactly once" machine-checkable (the liabilities:reimbursable
+account balances to zero). Writing the journal is pure stdlib; the optional
+hledger binary is only used by `reconcile` for validation and balances.
 """
 import argparse
+import shutil
+import subprocess
 from decimal import Decimal
 
 import bizlib
@@ -20,6 +29,29 @@ FLOW = {"draft": {"submitted"},
         "rejected": {"submitted"},
         "approved": {"paid"},
         "paid": {"archived"}}
+
+JOURNAL = bizlib.BIZ_HOME / "expenses" / "journal.hledger"
+
+
+def money(cents):
+    return f"{Decimal(cents) / 100:.2f} CNY"
+
+
+def journal_append(row, kind):
+    """Append the double-entry posting for an approved/paid transition."""
+    desc = " ".join((row["reason"] or "expense").split()) or "expense"
+    reimb = f"liabilities:reimbursable:{row['approved_by'] or 'self'}"
+    if kind == "approved":
+        lines = [f"{row['date']} ({row['id']}) {desc}",
+                 f"    expenses:{row['category'] or 'uncategorized'}    {money(row['amount_cents'])}",
+                 f"    {reimb}"]
+    else:  # paid
+        lines = [f"{bizlib.now().strftime('%Y-%m-%d')} ({row['id']}) reimbursement payout",
+                 f"    {reimb}    {money(row['amount_cents'])}",
+                 "    assets:bank"]
+    JOURNAL.parent.mkdir(parents=True, exist_ok=True)
+    with JOURNAL.open("a", encoding="utf-8") as f:
+        f.write("\n".join(lines) + "\n\n")
 
 
 def ledger_append(row, note=""):
@@ -71,7 +103,11 @@ def move(a, con):
     con.commit()
     row = con.execute("SELECT * FROM expenses WHERE id=?", (a.id,)).fetchone()
     ledger_append(row, note=(a.note or ""))
-    bizlib.ok({"expense": dict(row)})
+    out = {"expense": dict(row)}
+    if a.to in ("approved", "paid"):
+        journal_append(row, a.to)
+        out["journal"] = str(JOURNAL)
+    bizlib.ok(out)
 
 
 def list_(a, con):
@@ -97,6 +133,40 @@ def report(a, con):
                "total_yuan": str(Decimal(total) / 100)})
 
 
+def reconcile(_a, con):
+    """Check that every approved expense is paid exactly once."""
+    out = {}
+    rows = con.execute(
+        "SELECT id, date, amount_cents, approved_by FROM expenses"
+        " WHERE status='approved' ORDER BY date").fetchall()
+    out["approved_awaiting_payment"] = [dict(r) for r in rows]
+    out["awaiting_total_yuan"] = str(Decimal(sum(r["amount_cents"] for r in rows)) / 100)
+    if not JOURNAL.exists():
+        out["journal"] = "no journal yet (created on first approval)"
+        bizlib.ok(out)
+        return
+    out["journal"] = str(JOURNAL)
+    hledger = shutil.which("hledger")
+    if not hledger:
+        out["hledger"] = ("not installed — journal entries are still written; install the"
+                          " single hledger binary (https://hledger.org) to enable"
+                          " machine-checked validation and balances")
+        bizlib.ok(out)
+        return
+    try:
+        chk = subprocess.run([hledger, "-f", str(JOURNAL), "check"],
+                             capture_output=True, text=True, timeout=30)
+        bal = subprocess.run([hledger, "-f", str(JOURNAL), "balance",
+                              "liabilities:reimbursable", "--no-total"],
+                             capture_output=True, text=True, timeout=30)
+        out["hledger_check"] = "ok" if chk.returncode == 0 else chk.stderr.strip()
+        out["reimbursable_balance"] = (bal.stdout.strip()
+                                       or "0 — every approved expense has been paid")
+    except Exception as e:  # noqa: BLE001 — reconcile must never crash the receipt
+        out["hledger_error"] = str(e)
+    bizlib.ok(out)
+
+
 def main():
     p = argparse.ArgumentParser()
     sub = p.add_subparsers(dest="cmd", required=True)
@@ -109,9 +179,11 @@ def main():
     s.add_argument("--to", required=True); s.add_argument("--by"); s.add_argument("--note")
     s = sub.add_parser("list"); s.add_argument("--status"); s.add_argument("--month")
     s = sub.add_parser("report"); s.add_argument("--month", required=True)
+    sub.add_parser("reconcile")
     a = p.parse_args()
     con = bizlib.connect()
-    {"add": add, "attach": attach, "move": move, "list": list_, "report": report}[a.cmd](a, con)
+    {"add": add, "attach": attach, "move": move, "list": list_,
+     "report": report, "reconcile": reconcile}[a.cmd](a, con)
     con.close()
 
 

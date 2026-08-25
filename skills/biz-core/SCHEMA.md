@@ -15,7 +15,8 @@ $BIZ_HOME/                 # default ~/biz  (env BIZ_HOME)
   tasks/                   # reserved for task narrative files
   calendar/                # reserved for rendered month views
   expenses/
-    ledger-YYYY-MM.md      # append-only audit ledger
+    ledger-YYYY-MM.md      # append-only audit ledger (human-readable trail)
+    journal.hledger        # append-only double-entry journal (hledger-compatible)
     receipts/              # receipt images referenced by expenses.receipt_file
 ```
 
@@ -26,6 +27,7 @@ $BIZ_HOME/                 # default ~/biz  (env BIZ_HOME)
 | Structured fields (stage, status, amounts, dates) | `biz.db` | mirror only, regenerable |
 | Narrative (timelines, notes, blocker reasons) | lead/task `.md` files (append-only sections) | primary |
 | Audit trail (expense history) | `ledger-*.md` (append-only) + `expenses` rows | both, ledger never rewritten |
+| Money record (approved/paid postings) | `journal.hledger` (append-only, double-entry) | machine-checkable: `liabilities:reimbursable` balancing to zero proves every approved expense was paid exactly once |
 | Search text | `kb_fts` (derived) | — |
 
 Invariants:
