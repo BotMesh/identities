@@ -90,6 +90,33 @@ agent 会：自动转写 → 整理成客户档案（公司/联系人/阶段/金
 
 ---
 
+### 📊 富格式报表（可选，推荐配置）
+
+问"这个月的客户按金额排一下，做成表格给我"——agent 会生成一个**交互式网页**
+（可排序表格 + 图表），发回一个**约 10 分钟后自动失效的临时链接**，点开即看，
+过期即毁，不留痕迹。
+
+**一次性配置（用免费的 Cloudflare R2）：**
+
+1. 在 Cloudflare 控制台创建一个 R2 存储桶（保持**私有**，无需开公开访问）
+2. 创建 R2 API 令牌（对该桶 Object Read & Write）
+3. 给桶加一条生命周期规则：对象 1 天后删除（双保险；链接本身 10 分钟就失效）
+4. 把以下环境变量配置给 agent：
+
+```bash
+RICH_VIEW_S3_ENDPOINT=https://<账户ID>.r2.cloudflarestorage.com
+RICH_VIEW_S3_BUCKET=agent-reports
+RICH_VIEW_S3_KEY_ID=...
+RICH_VIEW_S3_SECRET=...
+RICH_VIEW_TTL_SECONDS=600
+```
+
+不想用云？自托管 MinIO 走同一套配置（`RICH_VIEW_S3_REGION=us-east-1`）。
+没配置时不影响使用——agent 会自动退回纯文本表格。
+
+**注意**：链接不可猜测但**无需登录即可查看**，拿到链接的人在失效前都能打开；
+不要把报表链接转发到不该看的群。
+
 ## 三、数据在哪里、如何备份
 
 - 所有数据在 agent 工作区的 `~/biz/` 目录：SQLite 数据库 + markdown 档案 +
