@@ -8,7 +8,6 @@
     "github.com/BotMesh/identities/skills/pm-tasks",
     "github.com/BotMesh/identities/skills/my-calendar",
     "github.com/BotMesh/identities/skills/flow-expense",
-    "github.com/BotMesh/identities/skills/rich-view",
     "github.com/anthropics/skills/skills/xlsx",
     "github.com/anthropics/skills/skills/skill-creator"
   ]

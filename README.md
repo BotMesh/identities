@@ -11,7 +11,7 @@ workspace ([how identities work](https://docs.clawup.org/src/goat-metis-identity
 
 | Identity | Skills | For |
 |---|---|---|
-| [`digital-employee`](identities/digital-employee/) | biz-core · crm-leads · pm-tasks · my-calendar · flow-expense · rich-view · xlsx (official) · skill-creator (official) | Full business assistant: voice leads, tasks, calendar, expenses, rich reports |
+| [`digital-employee`](identities/digital-employee/) | biz-core · crm-leads · pm-tasks · my-calendar · flow-expense · xlsx (official) · skill-creator (official) | Full business assistant: voice leads, tasks, calendar, expenses |
 | [`crm-voice-leads`](identities/crm-voice-leads/) | biz-core · crm-leads | Minimal voice-to-CRM |
 
 **Register in ClawUp:** Settings → Identities → Create New Identity, then copy
@@ -44,7 +44,6 @@ names) are never guessed.
 | [pm-tasks](skills/pm-tasks/) | Task CRUD + daily follow-up digest |
 | [my-calendar](skills/my-calendar/) | Events, morning digest, reminder tick |
 | [flow-expense](skills/flow-expense/) | Expense state machine, approval gate, append-only ledger + hledger-compatible double-entry journal with a `reconcile` check; also the template skeleton for new workflows |
-| [rich-view](skills/rich-view/) | Query results → interactive HTML page (Tabulator + ECharts), published to Cloudflare R2 / MinIO as a presigned URL that expires in ~10 minutes |
 
 ## Curated ecosystem add-ons (reviewed 2026-08-25)
 
