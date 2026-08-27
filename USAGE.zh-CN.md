@@ -1,6 +1,6 @@
 # 在 ClawUp 上使用数字员工（中文使用指南）
 
-本仓库提供两个 [ClawUp](https://clawup.org) identity（预配置技能包）。选择 identity 创建
+本仓库提供 [ClawUp](https://clawup.org) identity（预配置技能包）。选择 identity 创建
 agent 后，你就拥有一个住在飞书/Telegram 里的业务助理：**语音记客户、盯任务、管日程、走报销**。
 
 | Identity | 包含技能 | 适合 |
