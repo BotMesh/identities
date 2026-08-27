@@ -12,7 +12,6 @@ workspace ([how identities work](https://docs.clawup.org/src/goat-metis-identity
 | Identity | Skills | For |
 |---|---|---|
 | [`digital-employee`](identities/digital-employee/) | biz-core · crm-leads · pm-tasks · my-calendar · flow-expense · xlsx (official) · skill-creator (official) | Full business assistant: voice leads, tasks, calendar, expenses |
-| [`crm-voice-leads`](identities/crm-voice-leads/) | biz-core · crm-leads | Minimal voice-to-CRM |
 
 **Register in ClawUp:** Settings → Identities → Create New Identity, then copy
 the slug, name, description, and skill source list from the identity's

@@ -6,7 +6,6 @@ agent 后，你就拥有一个住在飞书/Telegram 里的业务助理：**语�
 | Identity | 包含技能 | 适合 |
 |---|---|---|
 | `digital-employee` 数字员工 | biz-core · crm-leads · pm-tasks · my-calendar · flow-expense · xlsx（官方）· skill-creator（官方） | 完整业务助理 |
-| `crm-voice-leads` 语音线索 | biz-core · crm-leads | 只要"语音录客户"这一件事 |
 
 ---
 

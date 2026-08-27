@@ -1,9 +1,0 @@
-{
-  "slug": "crm-voice-leads",
-  "name": "CRM Voice Leads",
-  "description": "Minimal voice-to-CRM: dictate a customer contact, get a structured lead in your knowledge base.",
-  "skills": [
-    "github.com/BotMesh/identities/skills/biz-core",
-    "github.com/BotMesh/identities/skills/crm-leads"
-  ]
-}
